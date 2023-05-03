@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import "./Register.css";
+import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import axios from "../api/axios";
+import { Link } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -36,12 +37,16 @@ export default function RegisterForm() {
     useEffect(() => {
         let checkPassValid = PWD_REGEX.test(formFiledsInfo.password.value);
         changeFormFieldValue("password", "valid", checkPassValid);
-        let isPasswordsMached = formFiledsInfo.password.value == formFiledsInfo.confirmPassword.value;
+        let isPasswordsMached = formFiledsInfo.password.value === formFiledsInfo.confirmPassword.value;
         changeFormFieldValue("confirmPassword", "valid", isPasswordsMached);
     }, [formFiledsInfo.password.value, formFiledsInfo.confirmPassword.value]);
 
     useEffect(() => {
-        let checkFormValid = Object.values(formFiledsInfo).every(item => item.valid == true);
+        setResponseInfoInfo({ type: "", message: "" });
+    }, [formFiledsInfo.username.value, formFiledsInfo.password.value, formFiledsInfo.confirmPassword.value]);
+
+    useEffect(() => {
+        let checkFormValid = Object.values(formFiledsInfo).every(item => item.valid === true);
         setIsFormValid(checkFormValid);
     }, [formFiledsInfo]);
 
@@ -63,33 +68,35 @@ export default function RegisterForm() {
 
             //if try to submit form using JS in console (hacking)
             if (!isFormValid)
-                throw "Invalid Entry";
+                throw new Error("Invalid Entry");
 
             let apiBody = {
                 username: formFiledsInfo.username.value,
                 password: formFiledsInfo.password.value,
             };
 
-            const response = await axios.post("/register", apiBody);
+            await axios.post("/register", apiBody);
             setResponseInfoInfo({ type: "sucess", message: "Registered" });
         } catch (error) {
-            console.log(error.response);
+            // console.log(error);
             if (!error.response) {
                 setResponseInfoInfo({ type: "error", message: "No server response" });
-            } else if (error.response?.status == 409) {
+            } else if (error.response?.status === 409) {
                 console.log(error.response);
                 setResponseInfoInfo({ type: "error", message: error.response.data.message });
+            } if (error.message) {
+                setResponseInfoInfo({ type: "error", message: error.message });
             } else {
                 setResponseInfoInfo({ type: "error", message: "Registration Failed" });
             }
-            responseInfo.current.focus();
+            responseInfo.message && responseRef.current.focus();
         }
     };
 
     return (
         <section>
             <form onSubmit={submitForm}>
-                {responseInfo.message && <p ref={responseRef} aria-live="assertive" className={responseInfo.type.toLocaleLowerCase() == "error" ? "error-message" : "success-message"}>{responseInfo.message}</p>}
+                {responseInfo.message && <p ref={responseRef} aria-live="assertive" className={[responseInfo.type.toLocaleLowerCase() === "error" ? "error-message" : "success-message"]}>{responseInfo.message}</p>}
 
                 <p className="form-name">Register</p>
 
@@ -107,7 +114,7 @@ export default function RegisterForm() {
                     onChange={changeValue}
                     onFocus={changeFocus}
                     onBlur={changeFocus}
-                    required
+
                     aria-invalid={formFiledsInfo.username.valid}
                     aria-describedby="usernameNote"
                 />
@@ -129,7 +136,7 @@ export default function RegisterForm() {
                     onChange={changeValue}
                     onFocus={changeFocus}
                     onBlur={changeFocus}
-                    required
+
                     aria-invalid={formFiledsInfo.password.valid}
                     aria-describedby="passwordNote"
                 />
@@ -151,7 +158,7 @@ export default function RegisterForm() {
                     onChange={changeValue}
                     onFocus={changeFocus}
                     onBlur={changeFocus}
-                    required
+
                     aria-invalid={formFiledsInfo.confirmPassword.valid}
                     aria-describedby="confirmPassword"
                 />
@@ -159,11 +166,11 @@ export default function RegisterForm() {
                     <FontAwesomeIcon icon={faInfoCircle} className="fa-duotone" color="#fff" size="lg" /> Passwords not maching.
                 </p>
 
-                <button id="submit" disabled={!isFormValid}>Sign Up</button>
+                <button disabled={!isFormValid}>Sign Up</button>
 
                 <div>
                     <p className="link">Already Registered?</p>
-                    <a className="link" href="">Sign In</a>
+                    <Link className="link" to="/login">Sign Up</Link>
                 </div>
             </form>
         </section>
