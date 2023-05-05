@@ -39,6 +39,7 @@ form {
 label {
   font-family: "Nunito-Bold";
   color: #fff;
+  font-size: 18px;
 }
 
 .label-with-icon {
@@ -47,12 +48,24 @@ label {
   font-size: 18px;
 }
 
+.trustbox-div {
+  display: flex;
+  align-items: center;
+  padding: 10px 0 0;
+  gap: 5px;
+}
+
 input[type="text"],
 input[type="password"] {
   padding: 10px;
   font-size: 18px;
   font-family: "Nunito-Regular";
   border-radius: 10px;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
 }
 
 button {

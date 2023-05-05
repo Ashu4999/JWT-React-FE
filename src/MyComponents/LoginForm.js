@@ -19,7 +19,14 @@ export default function LoginForm() {
     const location = useLocation();
     const from = location?.state?.from?.pathname || "/";
 
-    const { setAuth } = useAuth();
+    const { setAuth, persistent, setPersistent } = useAuth();
+
+    const togglePersistent = () => {
+        setPersistent(pervState => {
+            localStorage.setItem("persistent", !pervState);
+            return !pervState;
+        })
+    };
 
     useEffect(() => {
         usernameRef.current.focus();
@@ -71,7 +78,7 @@ export default function LoginForm() {
         <section>
             <form onSubmit={submitForm}>
                 {responseInfo.message && <p ref={responseRef} aria-live="assertive" className={[responseInfo.type.toLocaleLowerCase() === "error" ? "error-message" : "success-message"]}>{responseInfo.message}</p>}
-                <p className="form-name">Login Form</p>
+                <p className="form-name">Sign In</p>
 
                 <label htmlFor="username">Username :</label>
                 <input
@@ -92,6 +99,11 @@ export default function LoginForm() {
                     onChange={changeValue}
                     required
                 />
+
+                <div className="trustbox-div">
+                    <input type="checkbox" id="trustCheck" checked={persistent} onChange={togglePersistent} />
+                    <label htmlFor="trustCheck">Trust this device</label>
+                </div>
 
                 <button disabled={!isFormValid}>Sign In</button>
 

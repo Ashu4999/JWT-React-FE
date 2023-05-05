@@ -98,7 +98,7 @@ export default function RegisterForm() {
             <form onSubmit={submitForm}>
                 {responseInfo.message && <p ref={responseRef} aria-live="assertive" className={[responseInfo.type.toLocaleLowerCase() === "error" ? "error-message" : "success-message"]}>{responseInfo.message}</p>}
 
-                <p className="form-name">Register</p>
+                <p className="form-name">Sign Up</p>
 
                 <label htmlFor="username" className="label-with-icon">Username :
                     {formFiledsInfo.username.value && <span>
