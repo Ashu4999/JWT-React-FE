@@ -42,7 +42,12 @@ export default function LoginForm() {
         try {
             let apiBody = { username: formFiledsInfo.username, password: formFiledsInfo.password }
 
-            let response = await axios.post(AUTH_URL, apiBody);
+            let response = await axios.post(
+                AUTH_URL,
+                apiBody,
+                { withCredentials: true, } //used when works with httponly cookies
+            );
+
             const accessToken = response.data.accessToken;
             const roles = response.data.roles;
             setAuth({ username: formFiledsInfo.username, accessToken, roles })

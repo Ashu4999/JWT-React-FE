@@ -9,3 +9,4 @@ export { default as NotFound404 } from "./NotFound404";
 export { default as Unauthorized } from "./Unauthorized";
 export { default as Layout } from "./Layout";
 export { default as RequireAuth } from "./RequireAuth";
+export { default as Users } from "./Users";
