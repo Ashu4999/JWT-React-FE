@@ -1,4 +1,4 @@
-import { RegisterForm, LoginForm, Links, Home, EditorPage, Layout, Lounge, Unauthorized, AdminPage, NotFound404, RequireAuth } from "./MyComponents";
+import { RegisterForm, LoginForm, Links, Home, EditorPage, Layout, Lounge, Unauthorized, AdminPage, NotFound404, RequireAuth, PersistentLogin } from "./MyComponents";
 import "./App.css"
 import { Route, Routes } from "react-router-dom";
 
@@ -18,21 +18,24 @@ function App() {
         <Route path="linkpage" element={<Links />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* want to protect these routes */}
-        <Route element={<RequireAuth allowedRoles={[Roles_List.User]} />}>
-          <Route path="/" element={<Home />} />
-        </Route>
+        {/* for persistent login for all protected routes so that don't redirect to login*/}
+        <Route element={<PersistentLogin />}>
+          {/* want to protect these routes */}
+          <Route element={<RequireAuth allowedRoles={[Roles_List.User]} />}>
+            <Route path="/" element={<Home />} />
+          </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Roles_List.Editor]} />}>
-          <Route path="editor" element={<EditorPage />} />
-        </Route>
+          <Route element={<RequireAuth allowedRoles={[Roles_List.Editor]} />}>
+            <Route path="editor" element={<EditorPage />} />
+          </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Roles_List.Admin]} />}>
-          <Route path="admin" element={<AdminPage />} />
-        </Route>
+          <Route element={<RequireAuth allowedRoles={[Roles_List.Admin]} />}>
+            <Route path="admin" element={<AdminPage />} />
+          </Route>
 
-        <Route element={<RequireAuth allowedRoles={[Roles_List.Editor, Roles_List.Admin]} />}>
-          <Route path="lounge" element={<Lounge />} />
+          <Route element={<RequireAuth allowedRoles={[Roles_List.Editor, Roles_List.Admin]} />}>
+            <Route path="lounge" element={<Lounge />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound404 />} />

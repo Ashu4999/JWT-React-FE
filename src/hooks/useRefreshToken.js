@@ -11,7 +11,11 @@ const useRefreshToken = () => {
             });
 
             setAuth(prevState => {
-                return { ...prevState, accessToken: response.data.accessToken }
+                return {
+                    ...prevState,
+                    accessToken: response.data.accessToken,
+                    roles: response.data.roles, // setting roles for route role guard
+                }
             });
 
             return response.data.accessToken;
