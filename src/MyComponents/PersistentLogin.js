@@ -26,7 +26,7 @@ const PersistentLogin = () => {
 
     return (
         isLoading
-            ? <div className="load"></div>
+            ? <div className="loader"></div>
             : <Outlet />
     )
 }
