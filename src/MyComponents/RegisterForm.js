@@ -170,7 +170,7 @@ export default function RegisterForm() {
 
                 <div>
                     <p className="link">Already Registered?</p>
-                    <Link className="link" to="/login">Sign Up</Link>
+                    <Link className="link" to="/login">Sign In</Link>
                 </div>
             </form>
         </section>
