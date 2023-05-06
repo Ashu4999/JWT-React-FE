@@ -1,8 +1,11 @@
 import { useAuth } from "../hooks";
 import axios from "../api/axios";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const useRefreshToken = () => {
     const { setAuth } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const refresh = async () => {
         try {
@@ -21,6 +24,10 @@ const useRefreshToken = () => {
             return response.data.accessToken;
         } catch (error) {
             console.log(error);
+            navigate("/login", {
+                state: { from: location }, replace: true
+            });
+            setAuth({});
         }
     };
     return refresh;
