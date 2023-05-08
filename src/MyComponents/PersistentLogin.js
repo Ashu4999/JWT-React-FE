@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAuth, useRefreshToken } from "../hooks";
+import { useAuth, useRefreshToken, useLocalStorage } from "../hooks";
 import { Outlet } from "react-router-dom";
 
 const PersistentLogin = () => {
-    const { auth, persistent } = useAuth();
+    const { auth } = useAuth();
+    const [persistent] = useLocalStorage("persist", false);
     const refresh = useRefreshToken();
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
@@ -11,7 +12,7 @@ const PersistentLogin = () => {
         const verifyRefreshToken = async () => {
             try {
                 const token = await refresh();
-                console.log(token);
+                // console.log(token);
             } catch (error) {
                 console.log(error);
             } finally {

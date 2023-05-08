@@ -11,7 +11,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 export default function RegisterForm() {
     const usernameRef = useRef();
     const responseRef = useRef();
-    const [responseInfo, setResponseInfoInfo] = useState({ type: "", message: "" });
+    const [responseInfo, setResponseInfo] = useState({ type: "", message: "" });
 
     const [formFiledsInfo, setFormFiledsInfo] = useState({
         username: { value: "", focus: false, valid: false },
@@ -42,7 +42,7 @@ export default function RegisterForm() {
     }, [formFiledsInfo.password.value, formFiledsInfo.confirmPassword.value]);
 
     useEffect(() => {
-        setResponseInfoInfo({ type: "", message: "" });
+        setResponseInfo({ type: "", message: "" });
     }, [formFiledsInfo.username.value, formFiledsInfo.password.value, formFiledsInfo.confirmPassword.value]);
 
     useEffect(() => {
@@ -76,18 +76,18 @@ export default function RegisterForm() {
             };
 
             await axios.post("/register", apiBody);
-            setResponseInfoInfo({ type: "sucess", message: "Registered" });
+            setResponseInfo({ type: "sucess", message: "Registered" });
         } catch (error) {
             // console.log(error);
             if (!error.response) {
-                setResponseInfoInfo({ type: "error", message: "No server response" });
+                setResponseInfo({ type: "error", message: "No server response" });
             } else if (error.response?.status === 409) {
                 console.log(error.response);
-                setResponseInfoInfo({ type: "error", message: error.response.data.message });
+                setResponseInfo({ type: "error", message: error.response.data.message });
             } if (error.message) {
-                setResponseInfoInfo({ type: "error", message: error.message });
+                setResponseInfo({ type: "error", message: error.message });
             } else {
-                setResponseInfoInfo({ type: "error", message: "Registration Failed" });
+                setResponseInfo({ type: "error", message: "Registration Failed" });
             }
             responseInfo.message && responseRef.current.focus();
         }
@@ -114,7 +114,6 @@ export default function RegisterForm() {
                     onChange={changeValue}
                     onFocus={changeFocus}
                     onBlur={changeFocus}
-
                     aria-invalid={formFiledsInfo.username.valid}
                     aria-describedby="usernameNote"
                 />

@@ -2,31 +2,29 @@ import { useEffect, useRef, useState } from "react";
 import "./index.css";
 import axios from "../api/axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks";
+import { useAuth, useLocalStorage, useToggle } from "../hooks";
 
 const AUTH_URL = "/auth";
 
 let initialFormFiledsValue = { username: "", password: "" };
 
 export default function LoginForm() {
+    const [usernameLS, setUsernameLS] = useLocalStorage("username", "");
+    let initialFormFiledsValue = { username: usernameLS, password: "" };
+
     const usernameRef = useRef();
     const responseRef = useRef();
     const [formFiledsInfo, setFormFiledsInfo] = useState(initialFormFiledsValue);
     const [isFormValid, setIsFormValid] = useState(false);
-    const [responseInfo, setResponseInfoInfo] = useState({ type: "", message: "" });
+    const [responseInfo, setResponseInfo] = useState({ type: "", message: "" });
+
 
     const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.from?.pathname || "/";
 
-    const { setAuth, persistent, setPersistent } = useAuth();
-
-    const togglePersistent = () => {
-        setPersistent(pervState => {
-            localStorage.setItem("persistent", !pervState);
-            return !pervState;
-        })
-    };
+    const { setAuth } = useAuth();
+    const [trustCheck, toggleTrustCheck] = useToggle("persist", false);
 
     useEffect(() => {
         usernameRef.current.focus();
@@ -35,7 +33,7 @@ export default function LoginForm() {
     useEffect(() => {
         let isFormValid = Object.values(formFiledsInfo).every(item => item !== "");
         setIsFormValid(isFormValid);
-        setResponseInfoInfo({ type: "", message: "" });
+        setResponseInfo({ type: "", message: "" });
     }, [formFiledsInfo]);
 
     const changeValue = (event) => {
@@ -64,11 +62,11 @@ export default function LoginForm() {
         } catch (error) {
             console.log(error);
             if (!error.response) {
-                setResponseInfoInfo({ type: "error", message: "No server response" });
+                setResponseInfo({ type: "error", message: "No server response" });
             } else if (error.response) {
-                setResponseInfoInfo({ type: "error", message: error.response.data.message ? error.response.data.message : error.response.data });
+                setResponseInfo({ type: "error", message: error.response.data.message ? error.response.data.message : error.response.data });
             } else {
-                setResponseInfoInfo({ type: "error", message: "Login Failed" });
+                setResponseInfo({ type: "error", message: "Login Failed" });
             }
             responseInfo.message && responseRef.current.focus();
         }
@@ -87,7 +85,7 @@ export default function LoginForm() {
                     id="username"
                     autoComplete="off"
                     value={formFiledsInfo.username}
-                    onChange={changeValue}
+                    onChange={(e) => { changeValue(e); setUsernameLS(e.target.value); }}
                     required
                 />
 
@@ -101,7 +99,7 @@ export default function LoginForm() {
                 />
 
                 <div className="trustbox-div">
-                    <input type="checkbox" id="trustCheck" checked={persistent} onChange={togglePersistent} />
+                    <input type="checkbox" id="trustCheck" checked={trustCheck} onChange={toggleTrustCheck} />
                     <label htmlFor="trustCheck">Trust this device</label>
                 </div>
 
