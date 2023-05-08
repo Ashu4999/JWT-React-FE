@@ -99,6 +99,7 @@ button {
   color: white;
   padding: 10px;
   border-radius: 10px;
+  word-wrap: break-word;
 }
 
 .error-message {
@@ -187,10 +188,14 @@ table {
 
 @media screen and ((max-width: 600px)) {
   form {
-    min-width: 100%;
-    margin: 0;
-    width: auto;
+    max-width: 70%;
+    margin: 50px 0;
   }
+
+  section {
+    align-items: normal;
+  }
+
   .box-container {
     max-width: 80%;
     margin: 0;
