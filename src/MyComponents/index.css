@@ -24,9 +24,9 @@ form {
   background-color: #12539a;
   border-radius: 5px;
   padding: 20px;
-  margin: 50px;
   width: 400px;
   max-width: 400px;
+  margin: auto !important;
 }
 
 .form-name {
@@ -188,7 +188,7 @@ table {
 
 @media screen and ((max-width: 600px)) {
   form {
-    max-width: 70%;
+    max-width: 80%;
     margin: 50px 0;
   }
 
