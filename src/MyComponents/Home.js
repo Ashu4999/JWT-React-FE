@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useLogout } from "../hooks";
+import { useAuth, useLogout } from "../hooks";
 
 export default function Home() {
+    const { auth } = useAuth();
     const navigate = useNavigate();
     const logout = useLogout();
 
@@ -13,7 +14,10 @@ export default function Home() {
     return (
         <section className="box-container">
             <p className="form-name">Home</p>
-            <p className="text">You are logged in!</p>
+            <div>
+                {auth?.username && <p className="text">{`Welcome ${auth.username}`}</p>}
+                <p className="text">You are logged in!</p>
+            </div>
             <Link className="link" to="/editor">Go to the Editor page</Link>
             <Link className="link" to="/admin">Go to Admin page</Link>
             <Link className="link" to="/lounge">Go to the Lounge</Link>

@@ -3,6 +3,7 @@ import "./index.css";
 import axios from "../api/axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useLocalStorage, useToggle } from "../hooks";
+import { LoadingButton } from "./ElementComponents";
 
 const AUTH_URL = "/auth";
 
@@ -17,6 +18,7 @@ export default function LoginForm() {
     const [formFiledsInfo, setFormFiledsInfo] = useState(initialFormFiledsValue);
     const [isFormValid, setIsFormValid] = useState(false);
     const [responseInfo, setResponseInfo] = useState({ type: "", message: "" });
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const navigate = useNavigate();
@@ -44,6 +46,7 @@ export default function LoginForm() {
 
     const submitForm = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         try {
             let apiBody = { username: formFiledsInfo.username, password: formFiledsInfo.password }
 
@@ -59,6 +62,7 @@ export default function LoginForm() {
 
             navigate(from, { replace: true });
             setFormFiledsInfo(initialFormFiledsValue);
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
             if (!error.response) {
@@ -69,6 +73,7 @@ export default function LoginForm() {
                 setResponseInfo({ type: "error", message: "Login Failed" });
             }
             responseInfo.message && responseRef.current.focus();
+            setIsLoading(false);
         }
     };
 
@@ -103,7 +108,7 @@ export default function LoginForm() {
                     <label htmlFor="trustCheck">Trust this device</label>
                 </div>
 
-                <button disabled={!isFormValid}>Sign In</button>
+                <LoadingButton isLoading={isLoading} isFormValid={isFormValid} buttonTitle={"Sign In"} />
 
                 <div>
                     <p className="link">Need an Account?</p>

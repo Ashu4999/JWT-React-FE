@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import axios from "../api/axios";
 import { Link } from "react-router-dom";
+import { LoadingButton } from "./ElementComponents";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -19,6 +20,7 @@ export default function RegisterForm() {
         confirmPassword: { value: "", focus: false, valid: false },
     });
     const [isFormValid, setIsFormValid] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         usernameRef.current.focus();
@@ -65,6 +67,7 @@ export default function RegisterForm() {
     const submitForm = async (event) => {
         try {
             event.preventDefault();
+            setIsLoading(true);
 
             //if try to submit form using JS in console (hacking)
             if (!isFormValid)
@@ -77,19 +80,21 @@ export default function RegisterForm() {
 
             await axios.post("/register", apiBody);
             setResponseInfo({ type: "sucess", message: "Registered" });
+            setIsLoading(false);
         } catch (error) {
             // console.log(error);
             if (!error.response) {
                 setResponseInfo({ type: "error", message: "No server response" });
             } else if (error.response?.status === 409) {
-                console.log(error.response);
+                console.log(error.response.data.message);
                 setResponseInfo({ type: "error", message: error.response.data.message });
-            } if (error.message) {
+            } else if (error.message) {
                 setResponseInfo({ type: "error", message: error.message });
             } else {
                 setResponseInfo({ type: "error", message: "Registration Failed" });
             }
             responseInfo.message && responseRef.current.focus();
+            setIsLoading(false);
         }
     };
 
@@ -165,7 +170,7 @@ export default function RegisterForm() {
                     <FontAwesomeIcon icon={faInfoCircle} className="fa-duotone" color="#fff" size="lg" /> Passwords not maching.
                 </p>
 
-                <button disabled={!isFormValid}>Sign Up</button>
+                <LoadingButton isLoading={isLoading} isFormValid={isFormValid} buttonTitle={"Sign Up"} />
 
                 <div>
                     <p className="link">Already Registered?</p>
